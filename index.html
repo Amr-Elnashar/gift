@@ -1,5 +1,896 @@
+
 <!DOCTYPE html>
-<html>
-<head><title>My Gift</title></head>
-<body><h1>My Gift Website</h1></body>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <meta name="theme-color" content="#0b0710">
+    <title>11:11 · A wish for you ❤️</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background: #0b0710;
+            background-image: radial-gradient(circle at 20% 30%, #1e1228 0%, #0b0710 70%);
+            min-height: 100vh;
+            overflow-x: hidden;
+            color: #f0e9f5;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .star-field {
+            position: fixed;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            opacity: 0.4;
+            animation: twinkle 4s infinite alternate;
+            box-shadow: 0 0 8px rgba(255, 240, 250, 0.8);
+        }
+
+        @keyframes twinkle {
+            0% { opacity: 0.15; transform: scale(0.9); }
+            100% { opacity: 0.8; transform: scale(1.2); }
+        }
+
+        .floating-heart {
+            position: fixed;
+            pointer-events: none;
+            z-index: 2;
+            font-size: 1rem;
+            opacity: 0.3;
+            animation: floatUp 6s linear forwards;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(0) rotate(0deg); opacity: 0.2; }
+            100% { transform: translateY(-120px) rotate(20deg); opacity: 0; }
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #b285e0, #d9a7eb);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 1rem 2.5rem;
+            border-radius: 60px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: #1a0b1f;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 25px -5px #b285e0, 0 0 20px rgba(210, 160, 255, 0.5);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.6rem;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 15px 35px -3px #b285e0, 0 0 30px #d9a7eb;
+            background: linear-gradient(135deg, #c59bea, #e6b9f5);
+        }
+
+        .btn-primary:active {
+            transform: scale(0.98);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1.5px solid rgba(210, 170, 255, 0.6);
+            color: #f0e2ff;
+            padding: 0.8rem 2rem;
+            border-radius: 60px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            backdrop-filter: blur(6px);
+        }
+
+        .btn-outline:hover {
+            background: rgba(180, 130, 255, 0.2);
+            border-color: #d9a7eb;
+        }
+
+        /* OPENING SCREEN */
+
+        .opening-screen {
+            position: fixed;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 50% 50%, #1f112b, #0b0710);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            transition: opacity 1s ease, visibility 1s;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .opening-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .clock-glow {
+            font-size: clamp(5rem, 20vw, 9rem);
+            font-weight: 300;
+            letter-spacing: 8px;
+            background: linear-gradient(135deg, #f3e0ff, #d9b0ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 40px #bc8cf0, 0 0 90px #9a6dd7;
+            animation: pulseGlow 2.5s infinite alternate;
+        }
+
+        @keyframes pulseGlow {
+            0% { opacity: 0.9; text-shadow: 0 0 30px #bc8cf0, 0 0 60px #9a6dd7; }
+            100% { opacity: 1; text-shadow: 0 0 50px #d9a7eb, 0 0 110px #b285e0; }
+        }
+
+        .wish-text {
+            font-size: clamp(1.2rem, 5vw, 1.8rem);
+            margin: 1rem 0 2.5rem;
+            color: #edd9ff;
+            font-weight: 300;
+            letter-spacing: 1px;
+            text-shadow: 0 0 20px #b285e0;
+        }
+
+        /* MUSIC */
+
+        .music-toggle {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            background: rgba(20, 12, 30, 0.7);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(210, 170, 255, 0.4);
+            border-radius: 50px;
+            width: 54px;
+            height: 54px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            cursor: pointer;
+            z-index: 999;
+            color: #edd9ff;
+            transition: all 0.2s;
+            box-shadow: 0 0 20px rgba(180, 130, 255, 0.3);
+        }
+
+        .music-toggle:hover {
+            background: rgba(80, 50, 110, 0.8);
+            transform: scale(1.05);
+        }
+
+        /* MAIN CONTENT */
+
+        .main-content {
+            position: relative;
+            z-index: 10;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem 8rem;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 1.2s ease 0.2s, visibility 1.2s;
+        }
+
+        .main-content.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        section {
+            margin-bottom: 8rem;
+        }
+
+        /* WELCOME */
+
+        .welcome-section {
+            min-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .welcome-title {
+            font-size: clamp(3rem, 10vw, 5rem);
+            font-weight: 500;
+            background: linear-gradient(to right, #f6e6ff, #e2baff, #b285e0);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -0.02em;
+            line-height: 1.2;
+            margin-bottom: 1rem;
+            text-shadow: 0 0 40px rgba(180, 130, 255, 0.5);
+        }
+
+        .welcome-sub {
+            font-size: clamp(1.2rem, 4vw, 1.8rem);
+            color: #dac5f0;
+            max-width: 700px;
+            margin: 1.5rem auto 2rem;
+            font-weight: 300;
+            animation: fadeSlide 1.2s ease-out;
+        }
+
+        @keyframes fadeSlide {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .heart-glow {
+            font-size: 5rem;
+            filter: drop-shadow(0 0 30px #d48aff);
+            animation: heartbeat 1.8s infinite ease-in-out;
+            margin: 1rem 0;
+        }
+
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            25% { transform: scale(1.1); }
+            40% { transform: scale(1); }
+            60% { transform: scale(1.08); }
+        }
+
+        /* SECTION HEADINGS */
+
+        .section-heading {
+            font-size: clamp(2rem, 6vw, 2.8rem);
+            font-weight: 400;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.8rem;
+            color: #f2e6ff;
+            text-align: center;
+        }
+
+        .section-sub {
+            text-align: center;
+            color: #c7aee0;
+            margin-bottom: 3.5rem;
+            font-size: 1.1rem;
+            font-weight: 300;
+        }
+
+        /* PHOTO GALLERY */
+
+        .timeline-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            align-items: stretch;
+        }
+
+        .memory-card {
+            background: rgba(28, 18, 42, 0.5);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(220, 180, 255, 0.25);
+            border-radius: 2rem;
+            padding: 1rem;
+            transition: all 0.4s ease;
+            box-shadow: 0 15px 30px -10px rgba(0, 0, 0, 0.7);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .memory-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(230, 180, 255, 0.7);
+            box-shadow: 0 25px 45px -10px #9a6dd7, 0 0 30px rgba(180, 130, 255, 0.3);
+        }
+
+        .memory-img {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            border-radius: 1.5rem;
+            overflow: hidden;
+            background: linear-gradient(145deg, #312147, #1e122c);
+            border: 1px solid rgba(210, 170, 255, 0.3);
+            position: relative;
+        }
+
+        .memory-img img {
+            width: 100%;
+            height: 100%;
+            display: block;
+            object-fit: cover;
+            object-position: center;
+            transition: transform 0.7s ease;
+        }
+
+        .memory-card:hover .memory-img img {
+            transform: scale(1.06);
+        }
+
+        /* LETTER */
+
+        .letter-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .envelope-wrapper {
+            perspective: 1500px;
+            width: min(380px, 85vw);
+            margin: 2rem auto;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .envelope-wrapper:hover {
+            transform: scale(1.02);
+        }
+
+        .envelope {
+            background: linear-gradient(145deg, #2e1e3f, #1b1127);
+            border-radius: 1.8rem;
+            padding: 2.5rem 1.5rem;
+            text-align: center;
+            border: 2px solid rgba(210, 170, 255, 0.6);
+            box-shadow: 0 20px 40px -10px #00000080, 0 0 40px #7a4fa0;
+            position: relative;
+            transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+            transform-style: preserve-3d;
+        }
+
+        .envelope:before {
+            content: "✉️";
+            font-size: 4rem;
+            display: block;
+            margin-bottom: 0.8rem;
+            filter: drop-shadow(0 0 15px #b285e0);
+        }
+
+        .envelope:after {
+            content: "Click to open";
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+            color: #c7aee0;
+            text-transform: uppercase;
+        }
+
+        .envelope-wrapper.open .envelope {
+            transform: rotateX(10deg) scale(0.98);
+            border-color: #e2baff;
+            box-shadow: 0 0 50px #b285e0;
+        }
+
+        .letter-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 1.2s cubic-bezier(0.23, 1, 0.32, 1), margin 0.5s, opacity 0.5s;
+            background: rgba(28, 18, 42, 0.6);
+            backdrop-filter: blur(16px);
+            border-radius: 2rem;
+            width: 100%;
+            margin-top: 0;
+            border: 1px solid transparent;
+            opacity: 0;
+        }
+
+        .letter-content.show {
+            max-height: 600px;
+            margin-top: 2rem;
+            padding: 2rem 1.8rem;
+            border-color: rgba(210, 170, 255, 0.4);
+            opacity: 1;
+            box-shadow: 0 25px 40px -15px #2e1e3f;
+        }
+
+        .letter-text {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            color: #f0e6ff;
+            text-align: right;
+            direction: rtl;
+            font-weight: 300;
+            letter-spacing: 0.3px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        /* WISH */
+
+        .wish-section {
+            text-align: center;
+        }
+
+        .wish-btn {
+            font-size: 1.3rem;
+            padding: 1.2rem 3rem;
+            margin: 2rem 0;
+        }
+
+        .wish-canvas {
+            position: relative;
+            min-height: 200px;
+            border-radius: 3rem;
+            background: radial-gradient(circle at 50% 30%, #170e22, #09050e);
+            margin-top: 2rem;
+            padding: 3rem 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            overflow: hidden;
+            transition: all 0.6s;
+            border: 1px solid rgba(210, 170, 255, 0.1);
+        }
+
+        .wish-message {
+            font-size: clamp(1.2rem, 4vw, 1.6rem);
+            max-width: 600px;
+            margin: 1rem auto;
+            color: #e9d4ff;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 1s, transform 1s;
+            text-shadow: 0 0 20px #b285e0;
+            position: relative;
+            z-index: 2;
+        }
+
+        .wish-message.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* FINAL SECTION */
+
+        .final-section {
+            text-align: center;
+            padding: 3rem 1rem;
+            border-radius: 4rem;
+            background: radial-gradient(circle at 50% 20%, #241631, #0b0710);
+            margin-top: 4rem;
+        }
+
+        .final-heart {
+            font-size: 6rem;
+            filter: drop-shadow(0 0 45px #d48aff);
+            animation: heartbeat 2s infinite;
+            margin-bottom: 1.5rem;
+        }
+
+        .final-line {
+            font-size: clamp(1.8rem, 6vw, 2.8rem);
+            font-weight: 400;
+            color: #f0e2ff;
+            margin-bottom: 1.5rem;
+            line-height: 1.3;
+            letter-spacing: -0.5px;
+        }
+
+        .final-msg {
+            color: #c7aee0;
+            max-width: 600px;
+            margin: 2rem auto 3rem;
+            font-weight: 300;
+            font-size: 1.1rem;
+        }
+
+        /* MOBILE */
+
+        @media (max-width: 600px) {
+            .memory-card {
+                padding: 0.8rem;
+            }
+
+            .letter-content.show {
+                padding: 1.5rem;
+            }
+
+            .letter-text {
+                font-size: 1rem;
+            }
+
+            section {
+                margin-bottom: 5rem;
+            }
+
+            .envelope {
+                padding: 1.8rem 1rem;
+            }
+
+            .music-toggle {
+                bottom: 15px;
+                right: 15px;
+                width: 48px;
+                height: 48px;
+            }
+
+            .timeline-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="star-field" id="starField"></div>
+
+    <!-- MUSIC BUTTON -->
+    <button class="music-toggle" id="musicToggle" aria-label="Toggle background music">
+        <span id="musicIcon">🔇</span>
+    </button>
+
+    <!-- OPENING SCREEN -->
+    <div class="opening-screen" id="openingScreen">
+        <div class="clock-glow">11:11</div>
+        <div class="wish-text">Make a Wish ❤️</div>
+        <button class="btn-primary" id="openSurpriseBtn">
+            Open Your Surprise
+        </button>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content" id="mainContent">
+
+        <!-- WELCOME -->
+        <section class="welcome-section">
+            <h1 class="welcome-title">To My Favorite Person ❤️</h1>
+            <p class="welcome-sub">
+                If I could make one wish at 11:11, it would always be you.
+            </p>
+            <div class="heart-glow">❤️</div>
+        </section>
+
+        <!-- SPECIAL MOMENTS -->
+        <section>
+            <h2 class="section-heading">Our Special Moments</h2>
+            <p class="section-sub">A few memories I hold close</p>
+
+            <div class="timeline-grid">
+
+                <div class="memory-card">
+                    <div class="memory-img">
+                        <img src="2.jpeg" alt="Our Special Memory 1">
+                    </div>
+                </div>
+
+                <div class="memory-card">
+                    <div class="memory-img">
+                        <img src="1.jpeg" alt="Our Special Memory 2">
+                    </div>
+                </div>
+
+                <div class="memory-card">
+                    <div class="memory-img">
+                        <img src="3.jpeg" alt="Our Special Memory 3">
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- LETTER -->
+        <section class="letter-container">
+
+            <h2 class="section-heading">A Letter For You</h2>
+            <p class="section-sub">From my heart to yours</p>
+
+            <div class="envelope-wrapper" id="envelopeWrapper">
+                <div class="envelope"></div>
+            </div>
+
+            <div class="letter-content" id="letterContent">
+                <p class="letter-text">
+                    يمكن وسط كل الأيام العادية، يكون يوم 11/11 مختلف شوية، مش عشان التاريخ نفسه، لكن عشان حبيت أخليه فرصة أقولك إن وجودك بيفرق، وإنك شخص مميز جدًا بالنسبالي. أتمنى دايمًا أشوفك مبسوطة، وأكون سبب في ابتسامتك.
+                </p>
+            </div>
+
+        </section>
+
+        <!-- INTERACTIVE WISH -->
+        <section class="wish-section">
+
+            <h2 class="section-heading">Make a Wish</h2>
+            <p class="section-sub">Close your eyes, then tap the button</p>
+
+            <button class="btn-primary wish-btn" id="wishBtn">
+                ✨ Make a Wish ✨
+            </button>
+
+            <div class="wish-canvas" id="wishCanvas">
+                <div class="wish-message" id="wishMessage">
+                    Some wishes don't need words.<br>
+                    Some are already in our hearts.
+                </div>
+            </div>
+
+        </section>
+
+        <!-- FINAL SURPRISE -->
+        <section class="final-section">
+
+            <div class="final-heart">❤️</div>
+
+            <div class="final-line">
+                If I had 11:11 every day,<br>
+                I'd still wish for you.
+            </div>
+
+            <p class="final-msg">
+                Thank you for being my favorite wish, my calm, and my always.
+            </p>
+
+            <button class="btn-outline" id="replayBtn">
+                ⟳ Replay My Surprise
+            </button>
+
+        </section>
+
+    </main>
+
+    <!-- BACKGROUND MUSIC -->
+    <audio id="bgMusic" loop preload="none">
+        <source src="music.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        (function () {
+
+            // ELEMENTS
+            const starField = document.getElementById('starField');
+            const openingScreen = document.getElementById('openingScreen');
+            const openSurpriseBtn = document.getElementById('openSurpriseBtn');
+            const mainContent = document.getElementById('mainContent');
+
+            const musicToggle = document.getElementById('musicToggle');
+            const musicIcon = document.getElementById('musicIcon');
+            const bgMusic = document.getElementById('bgMusic');
+
+            const envelopeWrapper = document.getElementById('envelopeWrapper');
+            const letterContent = document.getElementById('letterContent');
+
+            const wishBtn = document.getElementById('wishBtn');
+            const wishCanvas = document.getElementById('wishCanvas');
+            const wishMessage = document.getElementById('wishMessage');
+
+            const replayBtn = document.getElementById('replayBtn');
+
+            let musicPlaying = false;
+
+            bgMusic.volume = 0.25;
+
+            // CREATE STARS
+            function createStars() {
+                const starCount = 150;
+
+                for (let i = 0; i < starCount; i++) {
+                    const star = document.createElement('div');
+
+                    star.classList.add('star');
+
+                    const size = Math.random() * 3 + 1;
+
+                    star.style.width = size + 'px';
+                    star.style.height = size + 'px';
+                    star.style.left = Math.random() * 100 + '%';
+                    star.style.top = Math.random() * 100 + '%';
+                    star.style.animationDelay = Math.random() * 5 + 's';
+                    star.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                    star.style.opacity = Math.random() * 0.5 + 0.1;
+
+                    starField.appendChild(star);
+                }
+            }
+
+            createStars();
+
+            // AMBIENT FLOATING HEARTS
+            function createAmbientHeart() {
+                if (document.hidden) return;
+
+                const heart = document.createElement('div');
+
+                heart.classList.add('floating-heart');
+                heart.innerHTML = '❤️';
+
+                heart.style.left = Math.random() * 100 + '%';
+                heart.style.bottom = '-20px';
+                heart.style.fontSize = (Math.random() * 1.2 + 0.6) + 'rem';
+                heart.style.animationDuration = (Math.random() * 6 + 5) + 's';
+
+                document.body.appendChild(heart);
+
+                setTimeout(() => heart.remove(), 12000);
+            }
+
+            for (let i = 0; i < 12; i++) {
+                setTimeout(createAmbientHeart, i * 800);
+            }
+
+            setInterval(createAmbientHeart, 4000);
+
+            // MUSIC CONTROL
+            async function playMusic() {
+                bgMusic.muted = false;
+
+                try {
+                    await bgMusic.play();
+
+                    musicPlaying = true;
+                    musicIcon.textContent = '🔊';
+
+                } catch (error) {
+                    musicPlaying = false;
+                    musicIcon.textContent = '🔇';
+                }
+            }
+
+            function pauseMusic() {
+                bgMusic.pause();
+                musicPlaying = false;
+                musicIcon.textContent = '🔇';
+            }
+
+            musicToggle.addEventListener('click', () => {
+                if (musicPlaying) {
+                    pauseMusic();
+                } else {
+                    playMusic();
+                }
+            });
+
+            // OPEN SURPRISE
+            openSurpriseBtn.addEventListener('click', () => {
+
+                openingScreen.classList.add('hidden');
+                mainContent.classList.add('visible');
+
+                playMusic();
+
+            });
+
+            // ENVELOPE / LETTER
+            envelopeWrapper.addEventListener('click', () => {
+
+                envelopeWrapper.classList.toggle('open');
+                letterContent.classList.toggle('show');
+
+            });
+
+            // WISH ANIMATION
+            wishBtn.addEventListener('click', () => {
+
+                wishMessage.classList.add('show');
+
+                // FLOATING HEARTS
+                for (let i = 0; i < 22; i++) {
+
+                    const heart = document.createElement('div');
+
+                    heart.innerHTML = '❤️';
+
+                    heart.style.position = 'absolute';
+                    heart.style.left = Math.random() * 100 + '%';
+                    heart.style.bottom = '0';
+                    heart.style.fontSize = (Math.random() * 1.8 + 0.8) + 'rem';
+                    heart.style.opacity = Math.random() * 0.7 + 0.3;
+                    heart.style.pointerEvents = 'none';
+                    heart.style.zIndex = '5';
+                    heart.style.filter = 'drop-shadow(0 0 8px #d48aff)';
+                    heart.style.transition = 'transform 2s ease-out, opacity 2s';
+
+                    wishCanvas.appendChild(heart);
+
+                    requestAnimationFrame(() => {
+
+                        heart.style.transform =
+                            `translateY(-${Math.random() * 150 + 80}px) scale(${Math.random() * 0.8 + 0.8}) rotate(${Math.random() * 30 - 15}deg)`;
+
+                        heart.style.opacity = '0';
+
+                    });
+
+                    setTimeout(() => heart.remove(), 2500);
+
+                }
+
+                // FLOATING STARS
+                for (let i = 0; i < 15; i++) {
+
+                    const star = document.createElement('div');
+
+                    star.innerHTML = '✦';
+
+                    star.style.position = 'absolute';
+                    star.style.color = '#f0e2ff';
+                    star.style.fontSize = (Math.random() * 1.2 + 0.8) + 'rem';
+                    star.style.left = Math.random() * 100 + '%';
+                    star.style.top = Math.random() * 80 + '%';
+                    star.style.opacity = '0.8';
+                    star.style.textShadow = '0 0 15px #d9a7eb';
+                    star.style.pointerEvents = 'none';
+                    star.style.transition = 'transform 2s, opacity 2s';
+
+                    wishCanvas.appendChild(star);
+
+                    requestAnimationFrame(() => {
+
+                        star.style.transform =
+                            `translateY(-${Math.random() * 80 + 50}px) scale(0.5)`;
+
+                        star.style.opacity = '0';
+
+                    });
+
+                    setTimeout(() => star.remove(), 2000);
+
+                }
+
+            });
+
+            // REPLAY SURPRISE
+            replayBtn.addEventListener('click', () => {
+
+                letterContent.classList.remove('show');
+                envelopeWrapper.classList.remove('open');
+
+                wishMessage.classList.remove('show');
+
+                const extras = wishCanvas.querySelectorAll('div:not(.wish-message)');
+
+                extras.forEach(element => element.remove());
+
+                pauseMusic();
+
+                bgMusic.currentTime = 0;
+
+                mainContent.classList.remove('visible');
+                openingScreen.classList.remove('hidden');
+
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+
+            });
+
+            // INITIAL STATE
+            letterContent.classList.remove('show');
+            wishMessage.classList.remove('show');
+
+            bgMusic.pause();
+            bgMusic.currentTime = 0;
+
+        })();
+    </script>
+
+</body>
 </html>
